@@ -60,12 +60,12 @@ for filename in sys.argv:
                     print("not_valid_after:  ", cert.not_valid_after)
                 print("CERT_ISSUER:      ", cert.issuer)
                 print("Subject:          ", cert.subject)
-                for ex in cert.extensions:
-                    print("\tcritical:", ex.critical)
-                    print("\toid:", ex.oid._name)
-                    print("\t\tkey_identifier:", ex.value.key_identifier)
-                    print("\t\toid:", ex.value.oid)
-                    print("\tvalue:", dir(ex.value))
+#                for ex in cert.extensions:
+#                    print("\tcritical:", ex.critical)
+#                    print("\toid:", ex.oid._name)
+#                    print("\t\tkey_identifier:", ex.value.key_identifier)
+#                    print("\t\toid:", ex.value.oid)
+#                    print("\tvalue:", dir(ex.value))
 #                print("extensions:       ", cert.extensions)
                 print("signature_hash_algorithm:", cert.signature_hash_algorithm.name)
                 print("signature_algorithm_parameters", cert.signature_algorithm_parameters.name)
