@@ -1,15 +1,9 @@
 # uefi-cert-research
 UEFI certificate research 
 
-This script will search one or more files for asn1 x509 data which is used to validate.
+This script will search one or more files for x509 data which is used to validate uefi drivers and bootloaders
 
-`sudo apt install -y python3-asn1 python3-cryptography` 
-
-Older releases you need:
-
-`sudo apt install -y python3-asn1crypto`
-
-the script should automatically use one or the other.
+`sudo apt install -y python3-cryptography` 
 
 On a typical linux machine you can run the following:
 
