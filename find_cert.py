@@ -21,7 +21,15 @@
 import sys
 
 # packages after
-from cryptography import x509
+try:
+    from cryptography import x509
+except ModuleNotFoundError:
+    print("ERROR: you need the cryptography x509 python module, suggested fix:")
+    print("    sudo apt-install -y python3-cryptography")
+    print("  or ")
+    print("    pip3 install --user cryptography")
+    print("")
+    sys.exit(1)
 
 debug = False
 
