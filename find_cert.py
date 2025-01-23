@@ -101,3 +101,7 @@ for filename in sys.argv:
     except IsADirectoryError:
         # skip to next pathname
         pass
+    except PermissionError as e:
+        # skip to next pathname
+        print(f"WARN: unable to parse {filename} {e}")
+        pass
