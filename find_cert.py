@@ -18,6 +18,8 @@
 # like in the next 180 days due to how long it might take to patch firmware?
 
 # builtins before
+import argparse
+import requests
 import sys
 
 # packages after
@@ -31,11 +33,32 @@ except ModuleNotFoundError:
     print("")
     sys.exit(1)
 
+parser = argparse.ArgumentParser(description='''
+parse files searching for x509 data
+''', epilog='''project details at uefi-cert-research.org
+''')
+
+UPLOAD_URL="https://upload.uefi-cert-research.org/upload-cert"
 debug = False
+upload_data = True
 
 cert_files = []
+cert_der_data = []
 
-for filename in sys.argv:
+parser.add_argument("-d", "--debug",  dest="Debug",  help="enable debug tracing",
+    action='store_true')
+parser.add_argument("-n", "--no-upload", help="disable upload of seen certs",
+    action='store_false')
+parser.add_argument(dest="file",  help="file to parse", nargs='+')
+#
+args=parser.parse_args()
+#
+if args.Debug:
+    debug = True
+#
+
+#
+for filename in args.file:
 
     try:
         # open file as binary
@@ -70,6 +93,7 @@ for filename in sys.argv:
                         print(f"x509 cert found @ {CERT_INDEX}:{filename}")
                         print("---- START CERT ----")
                         cert_files.append(f"{CERT_INDEX}@{filename}")
+                        cert_der_data.append(cert_space)
 
                         print("serial:           ", cert.serial_number)
                         try:
@@ -105,3 +129,9 @@ for filename in sys.argv:
         # skip to next pathname
         print(f"WARN: unable to parse {filename} {e}")
         pass
+
+#
+# for cert_der in cert_der_data:
+#     res = requests.post(url=UPLOAD_URL, data=cert_der,
+#         headers={'Content-Type': 'application/octet-stream'})
+#
