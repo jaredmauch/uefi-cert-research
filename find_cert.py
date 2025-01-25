@@ -38,7 +38,7 @@ parse files searching for x509 data
 ''', epilog='''project details at uefi-cert-research.org
 ''')
 
-UPLOAD_URL="https://upload.uefi-cert-research.org/upload-cert"
+UPLOAD_URL="https://api.uefi-cert-research.org/upload-cert"
 debug = False
 upload_data = True
 
@@ -133,7 +133,7 @@ for filename in args.file:
         pass # perhaps a bogus symlink
 
 #
-# for cert_der in cert_der_data:
-#     res = requests.post(url=UPLOAD_URL, data=cert_der,
-#         headers={'Content-Type': 'application/octet-stream'})
+for cert_der in cert_der_data:
+    res = requests.post(url=UPLOAD_URL, data=cert_der,
+        headers={'Content-Type': 'application/octet-stream'})
 #
