@@ -93,3 +93,7 @@ for filename in sys.argv:
     except IsADirectoryError:
         # skip to next pathname
         pass
+    except PermissionError:
+        pass
+    except FileNotFoundError:
+        pass # perhaps a bogus symlink
