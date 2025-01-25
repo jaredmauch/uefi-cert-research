@@ -19,6 +19,7 @@
 
 # builtins before
 import argparse
+import base64
 import requests
 import sys
 
@@ -38,7 +39,7 @@ parse files searching for x509 data
 ''', epilog='''project details at uefi-cert-research.org
 ''')
 
-UPLOAD_URL="https://api.uefi-cert-research.org/upload-cert"
+UPLOAD_URL="https://api.uefi-cert-research.org/upload-cert.cgi"
 debug = False
 upload_data = True
 
@@ -134,6 +135,8 @@ for filename in args.file:
 
 #
 for cert_der in cert_der_data:
-    res = requests.post(url=UPLOAD_URL, data=cert_der,
+    b64_data = base64.b64encode(cert_der).decode()
+    print(b64_data)
+    res = requests.post(url=UPLOAD_URL, data=b64_data,
         headers={'Content-Type': 'application/octet-stream'})
 #
