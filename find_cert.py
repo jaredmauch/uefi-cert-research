@@ -129,6 +129,8 @@ for filename in args.file:
         # skip to next pathname
         print(f"WARN: unable to parse {filename} {e}")
         pass
+    except FileNotFoundError:
+        pass # perhaps a bogus symlink
 
 #
 # for cert_der in cert_der_data:
