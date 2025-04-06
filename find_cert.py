@@ -57,17 +57,16 @@ args=parser.parse_args()
 if args.Debug:
     debug = True
 #
+if args.no_upload:
+    upload_data = False
 
 #
 for filename in args.file:
-
     try:
         # open file as binary
         with open(filename, 'rb') as fh:
-
             # read into memory
             ba = bytearray(fh.read())
-
             # determine how many bytes
             length = len(ba)
 
@@ -77,12 +76,26 @@ for filename in args.file:
                 if CERT_INDEX > -1 and x < CERT_INDEX:
                     # skip ahead
                     continue
-                if ba[x] == 0x30 and ba[(x + 1)] == 0x82:
+                    
+                # Check for SEQUENCE tag (0x30)
+                if ba[x] == 0x30:
+                    # Check for valid length encoding
+                    length_byte = ba[x + 1]
+                    if length_byte < 0x80:  # Short form
+                        cert_len = length_byte + 2
+                    elif length_byte == 0x82:  # Long form
+                        if x + 4 >= length:  # Check if we have enough bytes
+                            continue
+                        cert_len = ((ba[x + 2] * 256) + ba[x + 3]) + 4
+                    else:
+                        continue  # Skip other length encodings
+                        
+                    # Check if we have enough data
+                    if x + cert_len > length:
+                        continue
+                        
                     # save start position of suspected x509 data
                     CERT_INDEX = x
-
-                    # attempt to extract the length
-                    cert_len = ((ba[(x + 2)] * 256) + ba[(x + 3)]) + 4
 
                     # copy the related data
                     cert_space = b"" + ba[CERT_INDEX:(CERT_INDEX + cert_len)]
@@ -123,6 +136,7 @@ for filename in args.file:
                         CERT_INDEX = -1
                         if debug:
                             print(f"{filename}@{CERT_INDEX}:{e}")
+
     except IsADirectoryError:
         # skip to next pathname
         pass
@@ -133,10 +147,10 @@ for filename in args.file:
     except FileNotFoundError:
         pass # perhaps a bogus symlink
 
-#
-for cert_der in cert_der_data:
-    b64_data = base64.b64encode(cert_der).decode()
-    print(b64_data)
-    res = requests.post(url=UPLOAD_URL, data=b64_data,
-        headers={'Content-Type': 'application/octet-stream'})
-#
+# Upload certificates if enabled
+if upload_data and cert_der_data:
+    for cert_der in cert_der_data:
+        b64_data = base64.b64encode(cert_der).decode()
+        print(b64_data)
+        res = requests.post(url=UPLOAD_URL, data=b64_data,
+            headers={'Content-Type': 'application/octet-stream'})
