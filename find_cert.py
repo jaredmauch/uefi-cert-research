@@ -57,7 +57,7 @@ args=parser.parse_args()
 if args.Debug:
     debug = True
 #
-if args.no_upload:
+if not args.no_upload:
     upload_data = False
 
 #
@@ -147,10 +147,15 @@ for filename in args.file:
     except FileNotFoundError:
         pass # perhaps a bogus symlink
 
+#
+#print(f"upload_data={upload_data}")
+
 # Upload certificates if enabled
 if upload_data and cert_der_data:
     for cert_der in cert_der_data:
         b64_data = base64.b64encode(cert_der).decode()
-        print(b64_data)
+        # print(b64_data)
         res = requests.post(url=UPLOAD_URL, data=b64_data,
             headers={'Content-Type': 'application/octet-stream'})
+        if not res.ok:
+            print(res)
