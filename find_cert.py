@@ -29,7 +29,7 @@ try:
     from cryptography.hazmat.primitives.asymmetric import rsa, ec, ed25519, ed448
 except ModuleNotFoundError:
     print("ERROR: you need the cryptography x509 python module, suggested fix:")
-    print("    sudo apt-install -y python3-cryptography")
+    print("    sudo apt install -y python3-cryptography")
     print("  or ")
     print("    pip3 install --user cryptography")
     print("")
